@@ -108,8 +108,22 @@ class MainActivity : ComponentActivity() {
                         Text(text = state.value.name, fontSize = 24.sp)
 
                         Button(onClick = {
-                            BluetoothHandler.send("Hello\n")
-                        }) { }
+                            BluetoothHandler.send("reset")
+                        }) {
+                            Text("Перезагрузка")
+                        }
+                        Button(onClick = {
+                            BluetoothHandler.send("enable on")
+                        }) {
+                            Text("Включить мотор")
+                        }
+                        Button(onClick = {
+                            BluetoothHandler.send("enable off")
+                        }) {
+                            Text("Выключить мотор")
+                        }
+
+
                     }
                 }
             }
