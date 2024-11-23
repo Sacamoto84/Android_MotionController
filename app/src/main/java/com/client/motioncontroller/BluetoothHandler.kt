@@ -84,6 +84,7 @@ object BluetoothHandler {
         ) {
             when (characteristic.uuid) {
                 BLP_MEASUREMENT_CHARACTERISTIC_UUID -> {
+                    parser(value)
                     val a = String(value, Charsets.UTF_8)
                     scope.launch {
                         Timber.i("!!! READ: %s", a)

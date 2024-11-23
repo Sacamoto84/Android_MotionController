@@ -102,6 +102,11 @@ class MainActivity : ComponentActivity() {
                             .fillMaxHeight()
                     ) {
 
+                        Text("Мотор включен: "+statusDriver.collectAsState().value.enable.toString())
+                        Text("Микрошаг: "+statusDriver.collectAsState().value.enable.toString())
+                        Text("Ток: "+statusDriver.collectAsState().value.enable.toString())
+                        Text("Shop: "+statusDriver.collectAsState().value.enable.toString())
+
                         val measurementText = BluetoothHandler.measurementFlow.collectAsState()
                         Text(text = measurementText.value, fontSize = 24.sp)
                         val state = BluetoothHandler.ble_state.collectAsState()
