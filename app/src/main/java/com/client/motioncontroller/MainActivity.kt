@@ -1,17 +1,10 @@
 package com.client.motioncontroller
 
-import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.le.ScanResult
-import android.content.ComponentName
 import android.content.Intent
-import android.content.ServiceConnection
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.IBinder
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
@@ -29,13 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import com.client.motioncontroller.ui.theme.MotionControllerTheme
-import com.welie.blessed.BluetoothCentralManager
-import com.welie.blessed.BluetoothCentralManagerCallback
-import com.welie.blessed.BluetoothPeripheral
+import com.welie.blessed.WriteType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -87,7 +78,7 @@ class MainActivity : ComponentActivity() {
 //        } else {
 //            requestPermissionLauncher.launch(permissions)
 //        }
-        
+
 //        defaultScope.launch {
 //            for (newValue in myCharacteristicValueChangeNotifications) {
 //                mainHandler.run {
@@ -97,6 +88,9 @@ class MainActivity : ComponentActivity() {
 //        }
 
         enableEdgeToEdge()
+
+
+
         setContent {
             MotionControllerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -105,10 +99,17 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight()) {
+                            .fillMaxHeight()
+                    ) {
 
                         val measurementText = BluetoothHandler.measurementFlow.collectAsState()
                         Text(text = measurementText.value, fontSize = 24.sp)
+                        val state = BluetoothHandler.ble_state.collectAsState()
+                        Text(text = state.value.name, fontSize = 24.sp)
+
+                        Button(onClick = {
+                            BluetoothHandler.send("Hello\n")
+                        }) { }
                     }
                 }
             }
@@ -150,15 +151,12 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    private val enableBleRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            restartScanning()
+    private val enableBleRequest =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                restartScanning()
+            }
         }
-    }
-
-
-
-
 
 
 //    override fun onStart() {
